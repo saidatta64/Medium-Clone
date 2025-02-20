@@ -1,8 +1,9 @@
 import { verify } from "hono/jwt";
 
 export default async function authMiddleware(c: any ,next :()=>void){
-    const token = c.req.header("authorization") || "";
+    const jwtToken = c.req.header("authorization") || "";
     try{
+        const token = jwtToken.split(" ")[1];
         const user = await verify(token,c.env.JWT_SECRET);
         if(user){
             c.set("userId" ,user.id);
