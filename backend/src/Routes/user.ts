@@ -17,7 +17,7 @@ Variables : {
 
     UserRoutes.post("/signup", async (c)=>{
         try{
-            const body : SignupInput = await c.res.json();
+            const body : SignupInput = await c.req.json();
             const {success} = signupInputs.safeParse(body);
             if(!success){
                 c.status(411)
@@ -62,7 +62,7 @@ Variables : {
 
     UserRoutes.post("/signin", async (c)=>{ //login
         try{
-            const body : SigninInput = await c.res.json();
+            const body : SigninInput = await c.req.json();
             const prisma = new PrismaClient({
                 datasourceUrl : c.env?.DATABASE_URL
             }).$extends(withAccelerate())
