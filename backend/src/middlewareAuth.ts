@@ -6,7 +6,7 @@ export default async function authMiddleware(c: any ,next :()=>void){
         const token = jwtToken.split(" ")[1];
         const user = await verify(token,c.env.JWT_SECRET);
         if(user){
-            c.set("userId" ,user.id);
+            c.set("userID" ,user.id);
             await next();
         }
     }catch(e :any){
