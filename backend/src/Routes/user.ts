@@ -132,7 +132,7 @@ Variables : {
 
     UserRoutes.get("/:id",authMiddleware, async(c)=>{
         try{
-        const id = c.req.param("id")
+        const id = c.req.param("id");
         const prisma = new PrismaClient({
             datasourceUrl:c.env?.DATABASE_URL
         }).$extends(withAccelerate());

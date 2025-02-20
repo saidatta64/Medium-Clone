@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "@prisma/extension-accelerate": "^1.2.2",
-    "@saidatta64/medium-common": "^1.0.3",
+    "@saidatta64/medium-common": "^1.1.2",
     "hono": "^4.7.2",
     "init": "^0.1.2",
     "inti": "^0.0.0",

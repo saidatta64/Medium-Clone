@@ -7,7 +7,7 @@ export default async function authMiddleware(c: any ,next :()=>void){
         const user = await verify(token,c.env.JWT_SECRET);
         if(user){
             c.set("userID" ,user.id);
-            await next();
+            return await next();
         }
     }catch(e :any){
         if(e == "JwtTokenInvalid"){

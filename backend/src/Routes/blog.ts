@@ -14,9 +14,9 @@ export const BlogRoutes = new Hono<{
     }
 }>()
 
-    BlogRoutes.use("/*",authMiddleware);
+        BlogRoutes.use("/*",authMiddleware);
 
-    BlogRoutes.post("/", async (c)=>{
+    BlogRoutes.post("/b", async (c)=>{
         try{
             const body : CreateBlogInputs =  await c.req.json();
             const id = c.get("userID")
@@ -40,7 +40,7 @@ export const BlogRoutes = new Hono<{
             })
         }
     })
-    BlogRoutes.put("/",async (c)=>{
+    BlogRoutes.put("/u",async (c)=>{
         try{
         const body = await c.req.json();
         const {success} = updateBlogInputs.safeParse(body);
@@ -50,14 +50,16 @@ export const BlogRoutes = new Hono<{
                 message: "Invalid Inputs"
             })
         }
+        console.log("here")
         const prisma = new PrismaClient({
             datasourceUrl : c.env?.DATABASE_URL
         }).$extends(withAccelerate())
-
+        const authorId = c.get("userID");
+        console.log("Updating blog with ID:", body.id, "by Author:", authorId);
         const post = await prisma.blog.update({
             where:{
                 id : body.id,
-                Authorid : body.Authorid
+                Authorid : authorId
             },
             data:{
                 title: body.title,
@@ -81,22 +83,9 @@ BlogRoutes.get("/bulk",async (c)=>{
             datasourceUrl : c.env?.DATABASE_URL
         }).$extends(withAccelerate())
 
-        const post = prisma.blog.findMany({
-            select:{
-                id:true,
-                title:true,
-                description:true,
-                PostedOn :true,
-                Authorid : true,
-                Author:{
-                    select:{
-                        username : true
-                    },
-                },
-            },
-        });
+        const post = await prisma.blog.findMany();
         return c.json({
-            post,
+            post
         })
     }catch(e){
         console.log("error: " +e)
@@ -112,7 +101,7 @@ BlogRoutes.get("/:id",async (c)=>{
         const prisma = new PrismaClient({
             datasourceUrl : c.env?.DATABASE_URL
         }).$extends(withAccelerate())
-        const post = prisma.blog.findUnique({
+        const post = await prisma.blog.findUnique({
             where:{
                 id : id
             },select:{
@@ -146,7 +135,7 @@ BlogRoutes.delete("/:id" , async (c)=>{
         const prisma = new PrismaClient({
             datasourceUrl:c.env?.DATABASE_URL
         }).$extends(withAccelerate())
-        const res = prisma.blog.delete({
+        const res = await prisma.blog.delete({
             where:{
                 id : id,
                 Authorid : c.get("userID")
